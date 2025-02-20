@@ -1,12 +1,11 @@
+import os
 from flask import Flask, request, redirect, url_for, render_template_string
 
 app = Flask(__name__)
 
-# Task list (stores tasks and their completion status)
 tasks = []
 
-# HTML Template inside Python
-HTML_TEMPLATE = """
+HTML_TEMPLATE = """ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,68 +13,18 @@ HTML_TEMPLATE = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlanIt - To-Do List</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-            background: linear-gradient(to right, #6dd5fa, #2980b9);
-            color: white;
-        }
-        h2 {
-            font-size: 28px;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        input {
-            padding: 10px;
-            width: 250px;
-            border-radius: 5px;
-            border: none;
-        }
-        button {
-            padding: 10px 15px;
-            background: #ffcc00;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover {
-            background: #ffdb4d;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            font-size: 18px;
-            margin: 10px 0;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        .completed {
-            text-decoration: line-through;
-            color: lightgray;
-        }
-        .task-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        a {
-            text-decoration: none;
-            font-weight: bold;
-            color: #ffcc00;
-        }
-        a:hover {
-            color: #ffdb4d;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; background: linear-gradient(to right, #6dd5fa, #2980b9); color: white; }
+        h2 { font-size: 28px; }
+        form { margin-bottom: 20px; }
+        input { padding: 10px; width: 250px; border-radius: 5px; border: none; }
+        button { padding: 10px 15px; background: #ffcc00; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #ffdb4d; }
+        ul { list-style-type: none; padding: 0; }
+        li { font-size: 18px; margin: 10px 0; background: rgba(255, 255, 255, 0.2); padding: 10px; border-radius: 5px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .completed { text-decoration: line-through; color: lightgray; }
+        .task-container { display: flex; gap: 10px; align-items: center; }
+        a { text-decoration: none; font-weight: bold; color: #ffcc00; }
+        a:hover { color: #ffdb4d; }
     </style>
 </head>
 <body>
@@ -107,7 +56,7 @@ def index():
 def add_task():
     task_text = request.form.get('task')
     if task_text:
-        tasks.append({"text": task_text, "completed": False})  # Store task with completion status
+        tasks.append({"text": task_text, "completed": False})
     return redirect(url_for('index'))
 
 @app.route('/toggle/<int:task_id>')
@@ -123,4 +72,5 @@ def delete_task(task_id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
